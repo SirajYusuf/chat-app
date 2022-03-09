@@ -19,6 +19,14 @@ app.get('/',(req,res)=>{
 
 app.use(express.json())
 
+let myArray = [{"child": ["one", "two", "three", "four"]}, {"child": ["five", "six", "seven", "eight"]}];
+
+for(let i = 0;i < myArray.length; i++){
+    let childArray = myArray[i].child;
+    for(let j = 0; j < childArray.length; j++){
+        console.log(childArray[j])
+    }
+}
 
 //server (emit) -> client (receive) - countUpdated
 //client(emit) -> server (receive) - increment
@@ -44,7 +52,7 @@ io.on('connection',(socket)=>{
     
     socket.on('sendLocation',(coords,callback)=>{
         console.log(coords)
-        io.emit('message',`https://www.google.com/maps/@${coords.latitude},${coords.longitude}`)
+        io.emit('locationMessage',`https://www.google.com/maps/@${coords.latitude},${coords.longitude}`)
         callback()
     })  
 
