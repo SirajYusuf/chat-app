@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express')
 const socketio = require('socket.io')
 const Filter = require('bad-words')
+const { generateMessage } = require('./utils/messages')
 
 const app = express()
 const server = http.createServer(app)
@@ -19,15 +20,6 @@ app.get('/',(req,res)=>{
 
 app.use(express.json())
 
-let myArray = [{"child": ["one", "two", "three", "four"]}, {"child": ["five", "six", "seven", "eight"]}];
-
-for(let i = 0;i < myArray.length; i++){
-    let childArray = myArray[i].child;
-    for(let j = 0; j < childArray.length; j++){
-        console.log(childArray[j])
-    }
-}
-
 //server (emit) -> client (receive) - countUpdated
 //client(emit) -> server (receive) - increment
 
@@ -36,8 +28,8 @@ let welcomeMessage = "Welcome user!"
 io.on('connection',(socket)=>{
     console.log('New WebSocket connection')
 
-    socket.emit('message',welcomeMessage)
-    socket.broadcast.emit('message','A new user has joined!')
+    socket.emit('message',generateMessage("welcome!"))
+    socket.broadcast.emit('message',generateMessage('A new user has joined!'))
 
     socket.on('sendMessage',(message,callback)=>{
         const filter = new Filter()
@@ -46,7 +38,7 @@ io.on('connection',(socket)=>{
             return callback('Profanity is not allowed!')
         }
 
-        io.emit('message',message)
+        io.emit('message',generateMessage(message))
         callback()
     })
     
@@ -57,7 +49,7 @@ io.on('connection',(socket)=>{
     })  
 
     socket.on('disconnect',()=>{
-        io.emit('message','A user has left')
+        io.emit('message',generateMessage('A user has left'))
     })
 })
 

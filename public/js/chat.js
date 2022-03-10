@@ -15,7 +15,7 @@ const locationMessageTemplate = document.querySelector('#locaton-message-templat
 socket.on('message',(welcomeMessage)=>{
     console.log(welcomeMessage)
     const html = Mustache.render(messageTemplate,{
-        message: welcomeMessage
+        message: welcomeMessage.text
     })
     $messages.insertAdjacentHTML('beforeend',html)
 })
